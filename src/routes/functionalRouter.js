@@ -14,10 +14,28 @@ router.get('/', async(req, res)=>{
     }
 })
 
+router.get('/:id', async (req, res)=>{
+    try{
+        let functional = await Functional.findById(req.params.id)
+        res.status(200).json(functional)
+    }catch(error){
+        res.status(422).send(error)
+    }
+})
+
+router.post('/', async (req, res)=>{
+    let { name } = req.body
+    try{
+        let functional = await Functional.create({ name })
+        res.status(200).json(functional)
+    }catch(error){
+        res.status(422).send(error)
+    }
+})
+
 router.post('/:id', async(req, res)=>{
     let { name } = req.body
     let functional = await Functional.create({name, persons:req.params.id})
-
     try{
         let person = await Persons.findById(req.params.id)
         person.functional.push(functional)
@@ -28,10 +46,19 @@ router.post('/:id', async(req, res)=>{
     }
 })
 
+router.put('/:id', async (req, res)=>{
+    let { functional } = req.body
+    try{
+        await Functional.findByIdAndUpdate(req.params.id, { functional }, { new: true })
+    }catch(error){
+        res.status(422).send(error)
+    }
+})
+
 router.delete('/:id', async (req, res)=>{
     try{
         let functional = await Functional.findByIdAndRemove(req.params.id)
-        res.status(200).send(functional)
+        res.status(200).json(functional)
     }catch(error){
         res.status(422).send(error)
     }

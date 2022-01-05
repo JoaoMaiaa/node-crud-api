@@ -14,10 +14,19 @@ router.get('/', async (req, res)=>{
     }
 })
 
+router.get('/:id', async (req, res)=>{
+    try{
+        let persons = await Persons.findById(req.params.id)
+        res.status(200).json(persons)
+    }catch(error){
+        res.status(422).send(error)
+    }
+})
+
 router.post('/', async (req, res)=>{
     let { name } = req.body
     try{
-        let person = await new Persons({name})
+        let person = await new Persons({ name })
         person.save()
         res.status(200).json(person)
     }catch(error){
@@ -38,7 +47,16 @@ router.post('/:id', async (req, res)=>{
     }
 })
 
-router.delete('/:id', async(req, res)=>{
+router.put('/:id', async (req, res)=>{
+    let { name } = req.body
+    try{
+        await Persons.findByIdAndUpdate(req.params.id, { name }, { new:true })
+    }catch(error){
+        res.status(422).send(error)
+    }
+})
+
+router.delete('/:id', async (req, res)=>{
     try{
         let person = await Persons.findByIdAndRemove(req.params.id)
         res.status(200).json(person)
