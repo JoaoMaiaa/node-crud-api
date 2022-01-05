@@ -1,6 +1,7 @@
 const express = require('express')
 
 const Persons = require('../models/personsModels')
+const Functional = require('../models/functionalModels')
 
 const router = express.Router()
 
@@ -19,6 +20,19 @@ router.post('/', async (req, res)=>{
         let person = await new Persons({name})
         person.save()
         res.status(200).json(person)
+    }catch(error){
+        res.status(422).send(error)
+    }
+})
+
+router.post('/:id', async (req, res)=>{
+    let { name } = req.body
+    let persons = await Persons.create({name, functional: req.params.id})
+    try{
+        let functional = await Functional.findById(req.params.id)
+        functional.persons.push(persons)
+        await functional.save()
+        res.status(200).json(functional)
     }catch(error){
         res.status(422).send(error)
     }
