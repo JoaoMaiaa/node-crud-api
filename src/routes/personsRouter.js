@@ -34,6 +34,7 @@ router.post('/', async (req, res)=>{
     }
 })
 
+// o name é a pessoa e o id é o id da função
 router.post('/:id', async (req, res)=>{
     let { name } = req.body
     let persons = await Persons.create({name, functional: req.params.id})
